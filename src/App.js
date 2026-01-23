@@ -36,7 +36,7 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [aboutOpen, setAboutOpen] = useState(false);
 
-  const [balance, setBalance] = useState(100);
+  const [balance, setBalance] = useState(0);
   const [jackpot, setJackpot] = useState(1254780);
   const [searchQuery, setSearchQuery] = useState("");
 
