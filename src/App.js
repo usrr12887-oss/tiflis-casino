@@ -1,229 +1,236 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Menu, X, User, Home, Gamepad2, Wallet, Trophy, LogOut, Settings, History, 
-  TrendingUp, Star, ShieldCheck, Globe, Activity
-} from 'lucide-react';
-// Canlı dəstək paketi
-import TawkMessengerReact from '@tawk.to/tawk-messenger-react';
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Menu, X, Home, Wallet, ArrowUpRight, ArrowDownLeft, Search, Info, Upload
+} from "lucide-react";
+import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
 
 const CASINO_IMAGES = [
-  { id: 1, title: "Gates of Olympus", img: "https://butakazino1.com/game-previews/LhnNtvoeyOc6k4ry9n5Y1nYUQbNWrx7InEuyuvGt.png" },
-  { id: 2, title: "Sweet Bonanza", img: "https://butakazino1.com/game-previews/6zRQT1GXI1XfOyDm0Begzvnhp2kCzXrFGCh8zeKw.png" },
-  { id: 3, title: "Sugar Rush", img: "https://butakazino1.com/game-previews/p9KjbITI6iMzJJ67u9Y7G2BDZKv40iusYVmCdJYu.png" },
-  { id: 4, title: "Wolf Gold", img: "https://butakazino1.com/game-previews/AyiItayuAVUQiLKi7sPMocsr6vU1Z0NwgtnilhN2.png" },
-  { id: 5, title: "The Dog House", img: "https://butakazino1.com/game-previews/OGXGGadnU0H8adoFwNn8l2EtegAuitWurtKOg5si.png" },
-  { id: 6, title: "Big Bass Splash", img: "https://butakazino1.com/game-previews/5wbH7oHXrZwLKwgUvpRWMVR8ed5DVcqWm1fnRiNe.png" }
+  { id: 1, title: "Rich Fruits", category: "slots", img: "https://butakazino1.com/game-previews/LhnNtvoeyOc6k4ry9n5Y1nYUQbNWrx7InEuyuvGt.png" },
+  { id: 2, title: "Sevens on Fire", category: "slots", img: "https://butakazino1.com/game-previews/6zRQT1GXI1XfOyDm0Begzvnhp2kCzXrFGCh8zeKw.png" },
+  { id: 3, title: "Hot Sevens", category: "slots", img: "https://butakazino1.com/game-previews/p9KjbITI6iMzJJ67u9Y7G2BDZKv40iusYVmCdJYu.png" },
+  { id: 4, title: "Fire Rage", category: "slots", img: "https://butakazino1.com/game-previews/AyiItayuAVUQiLKi7sPMocsr6vU1Z0NwgtnilhN2.png" },
+  { id: 5, title: "Extra Super 7", category: "slots", img: "https://butakazino1.com/game-previews/OGXGGadnU0H8adoFwNn8l2EtegAuitWurtKOg5si.png" },
+  { id: 6, title: "Sizzling Hot", category: "slots", img: "https://butakazino1.com/game-previews/5wbH7oHXrZwLKwgUvpRWMVR8ed5DVcqWm1fnRiNe.png" },
+  { id: 7, title: "Golden Scatter", category: "crash", img: "https://butakazino1.com/game-previews/67be3b1e6a1ab.png" },
+  { id: 8, title: "Hot Sevens Extreme", category: "slots", img: "https://butakazino1.com/game-previews/ANP8e6Q6THyoTI2FOi4dpYqKWjwVgDTAlePdx3nY.png" },
+  { id: 9, title: "Lady Luck", category: "classic", img: "https://butakazino1.com/game-previews/HBYVBRQfSgFRUlMqWsH0F0C26b140FWNDt70WvXv.png" },
+  { id: 10, title: "Ultra 7 Hot", category: "slots", img: "https://butakazino1.com/game-previews/6uk9XcHC4Ur7GI885sIpyIHorP1ZghISECMkAzlj.png" },
+  { id: 11, title: "Always Cherry", category: "slots", img: "https://butakazino1.com/game-previews/67be3b1e67753.png" },
+  { id: 12, title: "Aztec Century", category: "slots", img: "https://butakazino1.com/game-previews/3gH0H1F5U6yL1ATsuqXlZMs9CdbwRWOtFteg3DPb.png" },
+  { id: 13, title: "Hot Slot", category: "slots", img: "https://butakazino1.com/game-previews/67be3b1e68c87.png" },
+  { id: 14, title: "Fortune Star", category: "slots", img: "https://butakazino1.com/game-previews/fmB0l9c2PP4FDC4p8FlKqA7lBMyPpgROLNH1w0tX.png" },
+  { id: 15, title: "Simple Diamond", category: "slots", img: "https://butakazino1.com/game-previews/TKN82rBNvao25fHXoClZl8G3wb5hnrfDDyYFjOgy.png" },
+  { id: 16, title: "Joker's Fruit", category: "slots", img: "https://butakazino1.com/game-previews/DzKD2CN4oq8VttMHZjqsLn9DHAuD2Ot1peStzGB1.png" },
+  { id: 17, title: "Hit Jewels", category: "slots", img: "https://butakazino1.com/game-previews/67be3b1e999e1.png" },
+  { id: 18, title: "King of Jewels", category: "classic", img: "https://butakazino1.com/game-previews/67be3b1e57ee9.png" },
+  { id: 19, title: "Roll of Ramses", category: "slots", img: "https://butakazino1.com/game-previews/CZ1HFhyUV7dBfmvbnbA59p0yeER3ePGFxiEsjBVr.jpg" },
+  { id: 20, title: "Scatter Wins", category: "slots", img: "https://butakazino1.com/game-previews/67be3b1e6b720.png" },
+  { id: 21, title: "Tropical Fruits", category: "slots", img: "https://butakazino1.com/game-previews/67be3b1e5d42a.png" },
+  
 ];
 
-function App() {
+export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [balance, setBalance] = useState(100.00);
-  const [isDepositOpen, setIsDepositOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('lobby');
-  const [jackpot, setJackpot] = useState(1254780.45);
-  
+  const [user, setUser] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  const [balance, setBalance] = useState(100);
+  const [jackpot, setJackpot] = useState(1254780);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+
+  /* DEPOSIT STATES */
+  const [depositType, setDepositType] = useState("card");
+  const [depositAmount, setDepositAmount] = useState("");
+  const [cardNo, setCardNo] = useState("");
+  const [cardDate, setCardDate] = useState("");
+  const [cardCvv, setCardCvv] = useState("");
+
+  /* WITHDRAW STATES */
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawCard, setWithdrawCard] = useState("");
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setJackpot(prev => prev + Math.random() * 0.5);
-    }, 2000);
-    return () => clearInterval(timer);
+    const t = setInterval(() => setJackpot(j => j + Math.floor(Math.random() * 5)), 3000);
+    return () => clearInterval(t);
   }, []);
 
-  const [reels, setReels] = useState(['💎', '💎', '💎']);
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [lastWin, setLastWin] = useState(0);
-  const [amount, setAmount] = useState('');
-  const [step, setStep] = useState(1);
+  const games = useMemo(() => {
+    return CASINO_IMAGES.filter(g => g.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery]);
 
-  const symbols = ['🍒', '🍋', '💎', '7️⃣', '🔔', '🍇'];
-  
-  const spinSlots = () => {
-    if (balance < 10) return alert("Minimum mərc 10 ₼!");
-    setIsSpinning(true);
-    setBalance(prev => prev - 10);
-    setLastWin(0);
+  const handleDeposit = () => {
+    if (!user) return alert("Zəhmət olmasa əvvəl qeydiyyatdan keçin");
+    if (depositType === "card") {
+      if (cardNo.length < 16 || cardDate.length < 5 || cardCvv.length < 3) return alert("Kart məlumatlarını tam daxil edin");
+    }
+    const amt = Number(depositAmount);
+    if (!amt || amt <= 0) return alert("Məbləği düzgün daxil edin");
 
-    setTimeout(() => {
-      const newReels = [
-        symbols[Math.floor(Math.random() * symbols.length)],
-        symbols[Math.floor(Math.random() * symbols.length)],
-        symbols[Math.floor(Math.random() * symbols.length)]
-      ];
-      setReels(newReels);
-      setIsSpinning(false);
+    setBalance(b => b + amt);
+    alert("Ödəniş uğurla tamamlandı!");
+    setDepositOpen(false);
+    resetDeposit();
+  };
 
-      if (newReels[0] === newReels[1] && newReels[1] === newReels[2]) {
-        const win = 100; setBalance(p => p + win); setLastWin(win);
-      } else if (newReels[0] === newReels[1] || newReels[1] === newReels[2]) {
-        const win = 20; setBalance(p => p + win); setLastWin(win);
-      }
-    }, 800);
+  const resetDeposit = () => {
+    setDepositAmount(""); setCardNo(""); setCardDate(""); setCardCvv("");
+  };
+
+  const handleWithdraw = () => {
+    const amt = Number(withdrawAmount);
+    if (amt < 20) return alert("Minimum çıxarış 20 ₼-dır");
+    if (amt > balance) return alert("Balansınızda kifayət qədər vəsait yoxdur");
+    if (withdrawCard.length < 16) return alert("Kart nömrəsi 16 rəqəmli olmalıdır");
+
+    setBalance(b => b - amt);
+    alert("Çıxarış sorğusu qəbul edildi. 24 saat ərzində kartınıza köçürüləcək.");
+    setWithdrawOpen(false);
   };
 
   return (
-    <div className="flex h-screen bg-[#05070a] text-slate-200 font-sans overflow-hidden">
-      
-      {sidebarOpen && <div className="fixed inset-0 bg-black/90 z-[60] lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)}></div>}
+    <div className="flex h-screen bg-[#05070a] text-white overflow-hidden font-sans">
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/70 z-40 lg:hidden" />}
 
-      <aside className={`fixed inset-y-0 left-0 z-[70] w-64 bg-[#0a0c12] border-r border-white/5 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static flex flex-col`}>
-        <div className="p-8 flex justify-between items-center">
-          <h1 className="text-2xl font-black text-amber-500 italic tracking-tighter">TIFLIS<span className="text-white">CASINO</span></h1>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-500"><X size={24} /></button>
+      {/* SIDEBAR */}
+      <aside className={`fixed z-50 h-full w-64 bg-[#0a0c12] p-6 transition-transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
+        <div className="flex justify-between mb-8">
+          <h1 className="text-xl font-black text-amber-500 italic uppercase">Tiflis Casino</h1>
+          <button className="lg:hidden" onClick={() => setSidebarOpen(false)}><X /></button>
         </div>
-        <nav className="px-4 space-y-1 flex-1">
-          <button onClick={() => {setActiveTab('lobby'); setSidebarOpen(false)}} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${activeTab === 'lobby' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:bg-white/5'}`}>
-            <Home size={20} /> Lobby
-          </button>
-          <button onClick={() => {setActiveTab('slots'); setSidebarOpen(false)}} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${activeTab === 'slots' ? 'bg-amber-500 text-black font-bold' : 'text-slate-400 hover:bg-white/5'}`}>
-            <Gamepad2 size={20} /> Slotlar
-          </button>
-          <div className="my-6 border-t border-white/5"></div>
-          <button onClick={() => {setIsDepositOpen(true); setSidebarOpen(false)}} className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-amber-500 text-black font-bold">
-            <Wallet size={20} /> Depozit
-          </button>
-        </nav>
+        <div className="space-y-2">
+          <button className="w-full bg-amber-500 text-black p-4 rounded-2xl font-bold flex gap-3 shadow-lg shadow-amber-500/10"><Home /> Ana səhifə</button>
+          <button onClick={() => {setDepositOpen(true); setSidebarOpen(false);}} className="w-full bg-white/5 p-4 rounded-2xl flex gap-3 hover:bg-white/10 transition"><ArrowDownLeft className="text-green-500" /> Depozit</button>
+          <button onClick={() => {setWithdrawOpen(true); setSidebarOpen(false);}} className="w-full bg-white/5 p-4 rounded-2xl flex gap-3 hover:bg-white/10 transition"><ArrowUpRight className="text-red-500" /> Çıxarış</button>
+          <button onClick={() => {setAboutOpen(true); setSidebarOpen(false);}} className="w-full bg-white/5 p-4 rounded-2xl flex gap-3 hover:bg-white/10 transition"><Info className="text-blue-500" /> Haqqımızda</button>
+        </div>
       </aside>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-20 border-b border-white/5 flex items-center justify-between px-6 bg-[#05070a]/80 backdrop-blur-xl z-50">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-white"><Menu /></button>
-          <div className="hidden md:flex flex-col items-center">
-             <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest animate-pulse">Mega Jackpot</span>
-             <span className="text-2xl font-black font-mono text-white">₼ {jackpot.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col">
+        <header className="h-18 flex justify-between items-center px-4 md:px-8 border-b border-white/5 bg-[#05070a]/80 backdrop-blur-md">
+          <button className="lg:hidden p-2 bg-white/5 rounded-lg" onClick={() => setSidebarOpen(true)}><Menu /></button>
+          <div className="text-center">
+            <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest">Global Jackpot</p>
+            <p className="font-black text-lg">₼ {jackpot.toLocaleString()}</p>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-               <p className="text-[10px] text-slate-500 font-bold uppercase">Balans</p>
-               <p className="text-xl font-black text-white">{balance.toFixed(2)} ₼</p>
+          {user ? (
+            <div className="bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+              <p className="text-[10px] text-slate-400 font-bold">{user.username.toUpperCase()}</p>
+              <p className="text-amber-500 font-black tracking-wide">{balance.toFixed(2)} ₼</p>
             </div>
-            <div className="relative">
-              <button onClick={() => setIsProfileOpen(!isProfileOpen)} className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition ${isProfileOpen ? 'bg-amber-500 text-black border-amber-500' : 'bg-slate-800 border-white/10 text-white'}`}>
-                <User size={24} />
-              </button>
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-3 w-64 bg-[#0f121a] border border-white/10 rounded-2xl shadow-2xl py-3 z-[100] animate-in slide-in-from-top-2">
-                  <div className="px-4 py-2 border-b border-white/5 mb-2"><p className="text-xs text-slate-500 uppercase font-bold tracking-widest">Hesabım</p><p className="text-white font-bold">ID: 994021</p></div>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-slate-300 text-sm"><History size={18}/> Tarixçə</button>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 text-red-500 font-bold text-sm"><LogOut size={18}/> Çıxış</button>
-                </div>
-              )}
-            </div>
-          </div>
+          ) : (
+            <button onClick={() => setAuthOpen(true)} className="bg-amber-500 text-black px-6 py-2.5 rounded-xl font-black hover:scale-105 transition">QEYDİYYAT</button>
+          )}
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
-          {activeTab === 'lobby' && (
-            <>
-              <div className="relative h-64 md:h-96 rounded-[2.5rem] overflow-hidden group border border-white/10">
-                <img 
-                  src="https://nocomment.az/public/cloud/2025/05/nocomment_3d7c39e382bc7e7f6ce4797757c5f09f_x6yr2gkvlqsp9nbaw1e4.jpg" 
-                  alt=" Tiflis Kazino"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-end p-8 md:p-12">
-                  <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter leading-none mb-4">Tiflis<br/><span className="text-amber-500 text-xl md:text-2xl not-italic uppercase tracking-[0.4em]">Kazino</span></h2>
-                  <button onClick={() => setActiveTab('slots')} className="w-fit px-8 py-3 bg-amber-500 text-black font-black rounded-xl hover:bg-white transition">İNDİ OYNA</button>
-                </div>
-              </div>
-
-              <div className="bg-white/5 border border-white/5 rounded-2xl p-4 overflow-hidden relative">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-amber-500 font-bold whitespace-nowrap z-10 bg-[#05070a] pr-4"><TrendingUp size={18}/> CANLI:</div>
-                  <div className="flex gap-12 animate-marquee whitespace-nowrap text-sm font-medium italic text-slate-300">
-                    <span>User_442: <span className="text-green-500">450 ₼</span></span>
-                    <span>Player_01: <span className="text-green-500">1,200 ₼</span></span>
-                    <span>Vaqif77: <span className="text-green-500">80 ₼</span></span>
-                    <span>Aysel_M: <span className="text-green-500">2,500 ₼</span></span>
-                    <span>Natiq_90: <span className="text-green-500">110 ₼</span></span>
-                    <span>CasinoKing: <span className="text-green-500">3,400 ₼</span></span>
-                  </div>
-                </div>
-              </div>
-
-              <section>
-                <div className="flex items-center gap-3 mb-6">
-                  <Activity className="text-amber-500" size={20} />
-                  <h3 className="text-lg font-black uppercase tracking-widest">Top Oyunlar</h3>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-                  {CASINO_IMAGES.map((game) => (
-                    <div key={game.id} className="group relative aspect-[4/5] bg-slate-900 rounded-xl border border-white/5 overflow-hidden cursor-pointer">
-                       <img src={game.img} className="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt={game.title}/>
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                       <div className="absolute bottom-3 left-3 right-3 text-[11px] font-bold text-white truncate">{game.title}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {activeTab === 'slots' && (
-            <div className="max-w-4xl mx-auto py-6 animate-in slide-in-from-bottom-10">
-               <div className="bg-[#10141d] p-8 md:p-12 rounded-[3rem] border-8 border-[#1a1f2b] shadow-2xl text-center relative">
-                  <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8">
-                     {reels.map((s, i) => (
-                        <div key={i} className={`h-32 md:h-48 bg-[#05070a] rounded-2xl flex items-center justify-center text-5xl md:text-7xl shadow-inner border border-white/5 ${isSpinning ? 'animate-bounce' : ''}`}>{s}</div>
-                     ))}
-                  </div>
-                  <button onClick={spinSlots} disabled={isSpinning} className="w-full py-5 rounded-2xl bg-amber-500 text-black text-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all">
-                    {isSpinning ? '...' : 'SPIN'}
-                  </button>
-                  {lastWin > 0 && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-8 py-2 rounded-full font-black animate-bounce">+ {lastWin} ₼</div>}
-               </div>
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 pb-20">
+          <div className="relative h-44 md:h-64 rounded-[2.5rem] overflow-hidden shadow-2xl">
+            <img src="https://nocomment.az/public/cloud/2025/05/nocomment_3d7c39e382bc7e7f6ce4797757c5f09f_x6yr2gkvlqsp9nbaw1e4.jpg" className="w-full h-full object-cover opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black flex items-end p-8">
+              <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter">İLK DEPOZİTƏ <span className="text-amber-500">100% BONUS</span></h2>
             </div>
-          )}
-        </main>
+          </div>
 
-        <footer className="p-6 border-t border-white/5 bg-black/50 text-[10px] text-slate-500 flex justify-between items-center">
-           <div className="flex items-center gap-4"><ShieldCheck size={14} className="text-green-500"/> <span>Licensed by Curacao</span></div>
-           <p>© 2026 TIFLIS CASINO. 18+</p>
-        </footer>
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Oyun axtar..." className="w-full pl-12 p-4 bg-white/5 rounded-2xl border border-white/10 outline-none focus:border-amber-500/50" />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {games.map(g => (
+              <div key={g.id} className="group relative rounded-3xl overflow-hidden border border-white/5 bg-white/5 hover:border-amber-500/50 transition duration-300">
+                <img src={g.img} alt={g.title} className="w-full aspect-[4/5] object-cover opacity-80 group-hover:opacity-100 transition" />
+                <div className="p-3 bg-gradient-to-t from-black absolute bottom-0 w-full">
+                  <p className="text-xs font-bold truncate">{g.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
       </div>
 
-      {isDepositOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md">
-          <div className="bg-[#10141d] w-full max-w-md rounded-[2.5rem] border border-white/10 p-8 relative">
-            <button className="absolute top-6 right-6 text-slate-500" onClick={() => {setIsDepositOpen(false); setStep(1);}}><X size={24}/></button>
-            <h2 className="text-2xl font-black mb-6 italic">DEP<span className="text-amber-500">OZIT</span></h2>
-            {step === 1 ? (
-              <div className="space-y-6">
-                 <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Məbləğ" className="w-full bg-[#05070a] border border-white/10 rounded-2xl py-4 px-6 text-3xl font-mono text-amber-500 outline-none" />
-                 <button onClick={() => setStep(2)} className="w-full py-4 bg-amber-500 text-black font-black rounded-xl">DAVAM ET</button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                 <div className="p-6 bg-[#05070a] rounded-2xl border border-white/10 space-y-4">
-                    <input className="w-full bg-transparent text-xl font-mono outline-none border-b border-white/10 pb-2" placeholder="KART NÖMRƏSİ" />
-                 </div>
-                 <button onClick={() => { setStep(1); setIsDepositOpen(false); setBalance(prev => prev + Number(amount)); }} className="w-full py-4 bg-green-600 text-white font-black rounded-xl">TƏSDİQLƏ</button>
-              </div>
-            )}
+      {/* HAQQIMIZDA MODAL */}
+      {aboutOpen && (
+        <div className="fixed inset-0 bg-black/90 z-[300] flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-[#10141d] p-8 rounded-[2.5rem] w-full max-w-lg border border-white/10 relative">
+            <button className="absolute top-6 right-6" onClick={() => setAboutOpen(false)}><X/></button>
+            <h3 className="text-2xl font-black mb-4 text-amber-500 italic">TİFLİS CASINO HAQQINDA</h3>
+            <div className="text-slate-300 space-y-4 text-sm leading-relaxed">
+              <p>Tiflis Casino, 2018-ci ildən bəri onlayn oyun sahəsində etibarlı və innovativ xidmət təqdim edən platformadır. Bizim məqsədimiz istifadəçilərə ən yüksək keyfiyyətli oyun təcrübəsi və sürətli ödəniş imkanları yaratmaqdır.</p>
+              <p>Kurasao lisenziyası ilə fəaliyyət göstərən platformamızda 3000-dən çox slot və canlı kazino oyunu mövcuddur. 7/24 canlı dəstək və anında çıxarış sistemi ilə oyunçularımızın məmnuniyyətini hər zaman ön planda tuturuq.</p>
+              <p className="font-bold text-white italic">Uğur sizinlə olsun!</p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* CANLI DƏSTƏK KOMPONENTİ */}
-      <TawkMessengerReact
-          propertyId="697238fd0938061981969133"
-          widgetId="1jfj2t7sb"
-      />
+      {/* DEPOSIT MODAL */}
+      {depositOpen && (
+        <div className="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-[#10141d] p-8 rounded-[2.5rem] w-full max-w-sm border border-white/10 space-y-5">
+            <div className="flex justify-between items-center"><h3 className="text-xl font-black italic">BALANSI ARTIR</h3><button onClick={() => setDepositOpen(false)}><X/></button></div>
+            <div className="flex bg-black p-1 rounded-2xl">
+              <button onClick={() => setDepositType("card")} className={`flex-1 py-3 rounded-xl text-xs font-bold transition ${depositType === "card" ? "bg-amber-500 text-black" : ""}`}>KARTLA ÖDƏ</button>
+              <button onClick={() => setDepositType("transfer")} className={`flex-1 py-3 rounded-xl text-xs font-bold transition ${depositType === "transfer" ? "bg-amber-500 text-black" : ""}`}>P2P TRANSFER</button>
+            </div>
 
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          display: flex;
-          width: 200%;
-          animation: marquee 25s linear infinite;
-        }
-        .animate-marquee:hover { animation-play-state: paused; }
-      `}</style>
+            {depositType === "card" ? (
+              <div className="space-y-3">
+                <input value={cardNo} onChange={e => setCardNo(e.target.value)} maxLength={16} placeholder="Kart nömrəsi (16 rəqəm)" className="w-full p-4 bg-black rounded-xl border border-white/5 outline-none font-mono" />
+                <div className="flex gap-3">
+                  <input value={cardDate} onChange={e => setCardDate(e.target.value)} maxLength={5} placeholder="AA/İİ" className="w-1/2 p-4 bg-black rounded-xl border border-white/5 outline-none font-mono" />
+                  <input value={cardCvv} onChange={e => setCardCvv(e.target.value)} maxLength={3} placeholder="CVV" className="w-1/2 p-4 bg-black rounded-xl border border-white/5 outline-none font-mono" />
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-center space-y-2">
+                <p className="text-[10px] text-amber-500 font-bold uppercase tracking-widest">Köçürmə üçün kart</p>
+                <p className="text-lg font-black font-mono tracking-wider">4169 0000 1111 2222</p>
+                <p className="text-[10px] text-slate-400">Ödənişi edib aşağıdakı düymə ilə qəbzi göndərin</p>
+                <button className="flex items-center justify-center gap-2 w-full py-2 bg-white/5 rounded-lg text-xs font-bold border border-dashed border-white/20"><Upload size={14}/> Qəbz yüklə</button>
+              </div>
+            )}
+
+            <input value={depositAmount} onChange={e => setDepositAmount(e.target.value)} placeholder="Məbləğ (₼)" className="w-full p-4 bg-black rounded-xl border border-white/5 outline-none font-black text-amber-500 text-center text-xl" />
+            <button onClick={handleDeposit} className="w-full bg-amber-500 text-black py-5 rounded-2xl font-black text-lg shadow-xl shadow-amber-500/20 active:scale-95 transition">ÖDƏNİŞİ TƏSDİQLƏ</button>
+          </div>
+        </div>
+      )}
+
+      {/* WITHDRAW MODAL */}
+      {withdrawOpen && (
+        <div className="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-[#10141d] p-8 rounded-[2.5rem] w-full max-w-sm border border-white/10 space-y-5">
+            <div className="flex justify-between items-center"><h3 className="text-xl font-black italic">PUL ÇIXAR</h3><button onClick={() => setWithdrawOpen(false)}><X/></button></div>
+            <div className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl text-center">
+              <p className="text-[10px] text-slate-500 font-bold uppercase">Mövcud Balans</p>
+              <p className="text-2xl font-black text-white">{balance.toFixed(2)} ₼</p>
+            </div>
+            <input value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)} placeholder="Məbləğ (min 20 ₼)" className="w-full p-4 bg-black rounded-xl border border-white/5 outline-none" />
+            <input value={withdrawCard} onChange={e => setWithdrawCard(e.target.value)} maxLength={16} placeholder="Kart nömrəsi" className="w-full p-4 bg-black rounded-xl border border-white/5 outline-none font-mono" />
+            <button onClick={handleWithdraw} className="w-full bg-red-600 py-5 rounded-2xl font-black text-lg shadow-xl shadow-red-600/20 active:scale-95 transition tracking-widest uppercase">Göndər</button>
+          </div>
+        </div>
+      )}
+
+      {/* AUTH MODAL */}
+      {authOpen && (
+        <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
+          <div className="bg-[#10141d] p-8 rounded-[2.5rem] w-full max-w-xs space-y-4 border border-white/10">
+            <h3 className="text-2xl font-black italic text-center">XOŞ GƏLDİNİZ</h3>
+            <input value={username} onChange={e => setUsername(e.target.value)} placeholder="İstifadəçi adı" className="w-full p-4 bg-black rounded-xl border border-white/5 outline-none" />
+            <button onClick={() => { if(!username) return alert("Ad daxil edin"); setUser({username}); setAuthOpen(false); }} className="w-full bg-amber-500 text-black py-4 rounded-xl font-black uppercase">BAŞLA</button>
+            <div className="text-center text-[10px] text-slate-500">Qeydiyyatdan keçməklə qaydaları qəbul edirsiniz.</div>
+          </div>
+        </div>
+      )}
+
+      <TawkMessengerReact propertyId="697238fd0938061981969133" widgetId="1jfj2t7sb" />
     </div>
   );
 }
-
-export default App;
