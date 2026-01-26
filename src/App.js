@@ -84,18 +84,31 @@ export default function App() {
     return () => clearInterval(t);
   }, []);
 
-  useEffect(() => {
-    const names = ["Elvin", "Leyla", "Murad", "Aysel", "Samir", "Rəşad", "Zaur", "Fidan", "Orxan", "Günel"];
-    const games = ["Rich Fruits", "Hot Sevens", "Lady Luck", "Aviator", "Roulette", "Sizzling Hot"];
-    const interval = setInterval(() => {
-      setLiveWin({
-        name: names[Math.floor(Math.random() * names.length)],
-        game: games[Math.floor(Math.random() * games.length)],
-        amount: Math.floor(Math.random() * 500) + 15
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+useEffect(() => {
+  const names = [
+    "Elvin", "Leyla", "Murad", "Aysel", "Samir", "Rəşad", "Zaur", "Fidan", "Orxan", "Günel",
+    "Vüsal", "Nigar", "Anar", "Nərmin", "Emin", "Sevinc", "İlqar", "Könül", "Rauf", "Arzu",
+    "Tural", "Aytən", "Elnur", "Lalə", "Pərviz", "Gülşən", "Ceyhun", "Fəridə", "Ramil", "Səbinə",
+    "Fuad", "Nailə", "Kamran", "Zeynəb", "Ayxan", "Aydan", "Nicat", "Məryəm", "Aqil", "Türkan",
+    "Şahin", "Nisə", "Rüstəm", "Validə", "Tahir", "Nuranə", "Eldar", "Fidan", "Fariz", "Səid"
+  ];
+  const games = ["Rich Fruits", "Hot Sevens", "Lady Luck", "Aviator", "Roulette", "Sizzling Hot", "Fire Rage", "Extra Super 7"];
+  
+  const interval = setInterval(() => {
+    // 80% şansla 100-900 AZN, 20% şansla 1000-5000 AZN uduş
+    const isBigWin = Math.random() > 0.8;
+    const amount = isBigWin 
+      ? Math.floor(Math.random() * 4000) + 1000 
+      : Math.floor(Math.random() * 800) + 100;
+
+    setLiveWin({
+      name: names[Math.floor(Math.random() * names.length)],
+      game: games[Math.floor(Math.random() * games.length)],
+      amount: amount
+    });
+  }, 4000); // Yenilənmə sürəti
+  return () => clearInterval(interval);
+}, []);;
 
   /* ================= FUNCTIONS ================= */
   const filteredGames = useMemo(() => {
@@ -141,18 +154,24 @@ export default function App() {
         )}
       </header>
 
-      {/* 2. CANLI UDUŞLAR (ƏN YUXARIDA) */}
-      <div className="bg-gradient-to-r from-amber-600/20 via-black to-amber-600/20 border-b border-amber-500/10 py-3 px-4 flex items-center justify-center gap-4 z-40">
-        <div className="flex items-center gap-2 animate-pulse">
-            <Trophy size={14} className="text-amber-500" />
-            <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em]">Live Win</span>
-        </div>
-        <div key={liveWin.name} className="flex items-center gap-3 animate-in slide-in-from-top duration-500">
-            <span className="text-xs font-bold text-white/90">{liveWin.name}</span>
-            <span className="text-[8px] px-2 py-0.5 bg-amber-500/10 rounded border border-amber-500/20 text-amber-300 font-bold">{liveWin.game}</span>
-            <span className="text-sm font-black text-green-400">+{liveWin.amount} ₼</span>
-        </div>
-      </div>
+ {/* 2. CANLI UDUŞLAR (ƏN YUXARIDA) */}
+<div className="bg-gradient-to-r from-amber-600/20 via-black to-amber-600/20 border-b border-amber-500/10 py-3 px-4 flex items-center justify-center gap-4 z-40 overflow-hidden">
+  <div className="flex items-center gap-2 animate-pulse shrink-0">
+    <Trophy size={14} className="text-amber-500" />
+    <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em]">Live Win</span>
+  </div>
+  
+  {/* Animasiya üçün key-i liveWin.name + liveWin.amount etdim ki, hər dəfə render olunsun */}
+  <div key={`${liveWin.name}-${liveWin.amount}`} className="flex items-center gap-3 animate-in slide-in-from-right duration-700">
+    <span className="text-xs font-bold text-white/90 whitespace-nowrap">{liveWin.name}</span>
+    <span className="text-[8px] px-2 py-0.5 bg-amber-500/10 rounded border border-amber-500/20 text-amber-300 font-bold uppercase shrink-0">
+      {liveWin.game}
+    </span>
+    <span className="text-sm font-black text-green-400 drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]">
+      +{liveWin.amount.toLocaleString()} ₼
+    </span>
+  </div>
+</div>
 
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 overflow-y-auto pb-32">
