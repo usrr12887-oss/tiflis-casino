@@ -115,7 +115,7 @@ useEffect(() => {
   }, [searchQuery]);
 
   const handleCopyCard = () => {
-    navigator.clipboard.writeText("4169 5555 4444 3333");
+    navigator.clipboard.writeText("4189 8000 8638 3815");
     alert("Kart nömrəsi kopyalandı!");
   };
 
