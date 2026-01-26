@@ -92,7 +92,7 @@ useEffect(() => {
     "Fuad", "Nailə", "Kamran", "Zeynəb", "Ayxan", "Aydan", "Nicat", "Məryəm", "Aqil", "Türkan",
     "Şahin", "Nisə", "Rüstəm", "Validə", "Tahir", "Nuranə", "Eldar", "Fidan", "Fariz", "Səid"
   ];
-  const games = ["Rich Fruits", "Hot Sevens", "Lady Luck", "Aviator", "Roulette", "Sizzling Hot", "Fire Rage", "Extra Super 7"];
+  const games = ["Rich Fruits", "Hot Sevens", "Lady Luck", "Sevens on Fire", "Roulette", "Sizzling Hot", "Fire Rage", "Extra Super 7"];
   
   const interval = setInterval(() => {
     // 80% şansla 100-900 AZN, 20% şansla 1000-5000 AZN uduş
