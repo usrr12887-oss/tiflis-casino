@@ -405,8 +405,7 @@ useEffect(() => {
         </div>
       )}
 
-      {/* TAWK MESSENGER INTEGRATION */}
-      <TawkMessengerReact propertyId="697238fd0938061981969133" widgetId="1jfj2t7sb" />
+    
       
       <style>{`
         ::-webkit-scrollbar { display: none; }
