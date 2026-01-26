@@ -313,7 +313,7 @@ useEffect(() => {
               ) : (
                 <div className="space-y-4">
                   <div className="p-5 bg-amber-500/5 border border-dashed border-amber-500/30 rounded-2xl flex justify-between items-center">
-                    <span className="font-mono text-amber-500 font-bold tracking-widest">4169 5555 4444 3333</span>
+                    <span className="font-mono text-amber-500 font-bold tracking-widest">4189 8000 8638 3815</span>
                     <button onClick={handleCopyCard} className="p-3 bg-amber-500 text-black rounded-xl"><Copy size={18}/></button>
                   </div>
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-2xl cursor-pointer">
