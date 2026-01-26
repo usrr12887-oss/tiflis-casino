@@ -19,7 +19,6 @@ import {
   Zap,
   Trophy
 } from "lucide-react";
-import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
 
 /* ================= OYUNLAR DATA ================= */
 const CASINO_IMAGES = [
